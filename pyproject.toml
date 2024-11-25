@@ -1,0 +1,21 @@
+[project]
+name = "codegen"
+version = "0.0.1"
+description = "A sample Python package to create DTO and CRUD method in Go from SQL Create table statement"
+authors = [
+    { name = "Zeeshan Amjad", email = "zeeshan.amjad@gmail.com" },
+]
+readme = "README.md"
+license = { text = "MIT" }
+keywords = ["Go", "DTO", "CRUD"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+
+]
+
+[project.urls]
+"Homepage" = "https://github.com/zamjad/codegen"
