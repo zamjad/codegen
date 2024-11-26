@@ -8,7 +8,7 @@ class SQLParser:
     Parses SQL CREATE TABLE statements and constructs Table objects.
     """
     CREATE_TABLE_REGEX = re.compile(
-        r'CREATE\s+TABLE\s+[`"]?(\w+)\s*\((.*?)\);?',
+        r'CREATE\sTABLE\s+(\w+)\s*\((.*?)\);',
         re.IGNORECASE | re.DOTALL
     )
 
