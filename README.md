@@ -34,11 +34,18 @@ package repository
 import (
 	"database/sql"
 	"errors"
+	"time"
 )
 
 type Employees struct {
 	Employeeid int `json:"employeeid"`
-	Firstname sql.NullString `json:"firstname"`
+	Firstname string `json:"firstname"`
+	Lastname string `json:"lastname"`
+	Email sql.NullString `json:"email"`
+	Phonenumber sql.NullString `json:"phonenumber"`
+	Hiredate time.Time `json:"hiredate"`
+	Salary sql.NullFloat64 `json:"salary"`
+	Departmentid sql.NullInt32 `json:"departmentid"`
 }
 
 type RepoEmployees struct {
@@ -59,14 +66,14 @@ func (repo *RepoEmployees) Insert(employees *Employees) error {
 	}
 
 	if count == 0 {
-		query := "INSERT INTO Employees (FirstName) VALUES (@FirstName)"
+		query := "INSERT INTO Employees (FirstName, LastName, Email, PhoneNumber, HireDate, Salary, DepartmentID) VALUES (@FirstName, @LastName, @Email, @PhoneNumber, @HireDate, @Salary, @DepartmentID)"
 		stmt, err := repo.DB.Prepare(query)
 		if err != nil {
 			return err
 		}
 		defer stmt.Close()
 
-		_, err = stmt.Exec(sql.Named("FirstName", employees.Firstname))
+		_, err = stmt.Exec(sql.Named("FirstName", employees.Firstname), sql.Named("LastName", employees.Lastname), sql.Named("Email", employees.Email), sql.Named("PhoneNumber", employees.Phonenumber), sql.Named("HireDate", employees.Hiredate), sql.Named("Salary", employees.Salary), sql.Named("DepartmentID", employees.Departmentid))
 		if err != nil {
 			return err
 		}
@@ -77,14 +84,14 @@ func (repo *RepoEmployees) Insert(employees *Employees) error {
 
 // Update an existing Employees in the database.
 func (repo *RepoEmployees) Update(employees *Employees) error {
-	query := "UPDATE Employees SET FirstName = @FirstName WHERE EmployeeID = @EmployeeID"
+	query := "UPDATE Employees SET FirstName = @FirstName, LastName = @LastName, Email = @Email, PhoneNumber = @PhoneNumber, HireDate = @HireDate, Salary = @Salary, DepartmentID = @DepartmentID WHERE EmployeeID = @EmployeeID"
 	stmt, err := repo.DB.Prepare(query)
 	if err != nil {
 		return err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(sql.Named("FirstName", employees.Firstname), sql.Named("EmployeeID", employees.Employeeid))
+	_, err = stmt.Exec(sql.Named("FirstName", employees.Firstname), sql.Named("LastName", employees.Lastname), sql.Named("Email", employees.Email), sql.Named("PhoneNumber", employees.Phonenumber), sql.Named("HireDate", employees.Hiredate), sql.Named("Salary", employees.Salary), sql.Named("DepartmentID", employees.Departmentid), sql.Named("EmployeeID", employees.Employeeid))
 	if err != nil {
 		return err
 	}
@@ -95,11 +102,11 @@ func (repo *RepoEmployees) Update(employees *Employees) error {
 
 // retrieves Employees from the database by its primary key.
 func (repo *RepoEmployees) GetEmployeesByID(id int) (*Employees, error) {
-	query := "SELECT EmployeeID, FirstName FROM Employees WHERE EmployeeID = @EmployeeID"
+	query := "SELECT EmployeeID, FirstName, LastName, Email, PhoneNumber, HireDate, Salary, DepartmentID FROM Employees WHERE EmployeeID = @EmployeeID"
 	row := repo.DB.QueryRow(query, sql.Named("EmployeeID", id))
 
 	var employees Employees
-	err := row.Scan(&employees.Employeeid, &employees.Firstname)
+	err := row.Scan(&employees.Employeeid, &employees.Firstname, &employees.Lastname, &employees.Email, &employees.Phonenumber, &employees.Hiredate, &employees.Salary, &employees.Departmentid)
 	if err != nil {
 		return nil, err
 	}
@@ -122,5 +129,6 @@ func (repo *RepoEmployees) Delete(Employeeid int) error {
 	}
 	return nil
 }
+
 ```
 
